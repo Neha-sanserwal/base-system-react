@@ -1,61 +1,27 @@
 import React, { Component } from "react";
-const convertToBase = (numToConvert, baseToConvert, prevBase) => {
+import Input from "./Input";
+
+const convertToBase = (numToConvert, baseToConvert, currentBase) => {
   let baseNum = [];
   let newNum = 0;
   while (numToConvert > 0) {
     baseNum.push(numToConvert % baseToConvert);
     numToConvert = parseInt(numToConvert / baseToConvert);
   }
-  baseNum.forEach((num, idx) => (newNum += num * Math.pow(prevBase, idx)));
+  baseNum.forEach((num, idx) => (newNum += num * Math.pow(currentBase, idx)));
   return newNum;
 };
 
-const changeToBases = (bases, value, prevBase) => {
-  const valToConvert = convertToBase(value, 10, prevBase);
+const changeToBases = (bases, value, currentBase) => {
+  const valToConvert = convertToBase(value, 10, currentBase);
   const newBaseValues = {};
   for (const base in bases) {
-    if (base !== prevBase) {
-      newBaseValues[base] = convertToBase(valToConvert, base, 10);
-    }
+    newBaseValues[base] = convertToBase(valToConvert, base, 10);
   }
-  newBaseValues[prevBase] = value;
   return newBaseValues;
 };
 
-class Base extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event, base) {
-    const value = event.target.value;
-    if (this.props.validationConstrain.test(+value)) {
-      this.props.onChange(value, base);
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <label style={{ fontWeight: 900 }}>Base {this.props.base}</label>
-        <input
-          value={this.props.value}
-          onChange={(event) => this.handleChange(event, this.props.base)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-const validationConstrains = {
-  2: new RegExp("^[0-1]*$"),
-  8: new RegExp("^[0-7]*$"),
-  16: new RegExp("^[0-15]*$"),
-};
-
-class BaseSystem extends Component {
+class NumberSystems extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,25 +33,30 @@ class BaseSystem extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
   }
-  handleChange(value, prevBase) {
-    const newValues = changeToBases(this.state.numberSystems, value, prevBase);
+
+  handleChange(value, currentBase) {
+    const { numberSystems } = this.state;
+    const newValues = changeToBases(numberSystems, value, currentBase);
     this.setState((prevState) => ({
-      ...prevState,
       numberSystems: Object.assign(prevState.numberSystems, newValues),
     }));
   }
+
   render() {
-    const { numberSystems } = this.state;
-    return Object.entries(numberSystems).map(([base, value], index) => (
-      <Base
-        key={index}
-        base={base}
-        validationConstrain={validationConstrains[base]}
-        value={value}
-        onChange={this.handleChange}
-      />
+    const { inputValidation } = this.props;
+    const numberSystems = Object.entries(this.state.numberSystems);
+    return numberSystems.map(([base, value], index) => (
+      <div style={{ margin: "1rem" }} key={index}>
+        <label style={{ fontWeight: 900 }}>Base {base} : </label>
+        <Input
+          onChange={this.handleChange}
+          value={value}
+          base={base}
+          inputValidation={inputValidation[base]}
+        />
+      </div>
     ));
   }
 }
 
-export default BaseSystem;
+export default NumberSystems;
