@@ -11,7 +11,8 @@ const inputValidation = {
 function App() {
   return (
     <div className="App">
-      <NumberSystem inputValidation={inputValidation} />
+      <h1> Number System </h1>
+      <NumberSystem inputValidation={inputValidation} bases={[2, 8, 16]} />
     </div>
   );
 }
