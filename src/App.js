@@ -1,7 +1,6 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import BaseSystem from "./Components/baseSystem";
+import BaseSystem from "./Components/BaseSystem";
 
 function App() {
   return (

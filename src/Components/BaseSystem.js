@@ -19,7 +19,6 @@ const changeToBases = (bases, value, prevBase) => {
     }
   }
   newBaseValues[prevBase] = value;
-  console.log(newBaseValues);
   return newBaseValues;
 };
 
@@ -32,7 +31,6 @@ class Base extends Component {
 
   handleChange(event, base) {
     const value = event.target.value;
-    console.log(this.props.validationConstrain.test(+value));
     if (this.props.validationConstrain.test(+value)) {
       this.props.onChange(value, base);
     }
