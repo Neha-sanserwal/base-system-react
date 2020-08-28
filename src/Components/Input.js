@@ -1,17 +1,5 @@
 import React, { Component } from "react";
 
-const convertToBase = (numToConvert, baseToConvert, currentBase) => {
-  let remainders = [];
-  let newNum = 0;
-  while (numToConvert > 0) {
-    remainders.push(numToConvert % baseToConvert);
-    numToConvert = parseInt(numToConvert / baseToConvert);
-  }
-  remainders.forEach(
-    (remainder, idx) => (newNum += remainder * Math.pow(currentBase, idx))
-  );
-  return newNum;
-};
 class Input extends Component {
   constructor(props) {
     super(props);
@@ -20,9 +8,9 @@ class Input extends Component {
 
   handleChange(event, base) {
     const { onChange, inputValidation } = this.props;
-    const value = +event.target.value;
+    const value = event.target.value;
     if (inputValidation.test(value)) {
-      const base10Val = convertToBase(value, 10, base);
+      const base10Val = parseInt(value, base) || 0;
       onChange(base10Val);
     }
   }
@@ -31,7 +19,7 @@ class Input extends Component {
     const { base, value } = this.props;
     return (
       <input
-        value={convertToBase(value, base, 10)}
+        value={value.toString(base)}
         onChange={(event) => this.handleChange(event, base)}
       ></input>
     );
